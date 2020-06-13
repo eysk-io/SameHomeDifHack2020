@@ -12,10 +12,16 @@ const MatchProfileModal = ({ prospects }) => {
             temp[index].matched = true;
             setMatchedProspects(temp);
         }
+        setIndex(getIndex());
+    }
 
-        console.log(matchedProspects[index].name);
+    function handleDisLike() {
+        setIndex(getIndex());
+    }
+
+    function getIndex() {
         let i = Math.abs((index + 1) % matchedProspects.length);
-        setIndex(i);
+        return i;
     }
 
     return (
@@ -25,6 +31,9 @@ const MatchProfileModal = ({ prospects }) => {
             <Text>{`Matched?: ${matchedProspects[index] ? matchedProspects[index].matched.toString() : undefined}`}</Text>
             <TouchableOpacity onPress={handleLike}>
                 <Text>Like button</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleDisLike}>
+                <Text>DisLike button</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );
