@@ -26,12 +26,12 @@ connection.once("open", () => {
 });
 
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.send("server success");
 });
 
 app.post("/users/add", (req, res) => {
-    const {id, name, email, location, introduction, skills, ideas} = req.body;
+    const { id, name, email, location, introduction, skills, ideas } = req.body;
 
     const newUser = new users({
         id,
@@ -56,13 +56,13 @@ app.get("/users/:id", (req, res) => {
 });
 
 
-const getOption = (text1, text2) =>{
+const getOption = (text1, text2) => {
     const option = {
         method: 'GET',
         url: 'https://twinword-text-similarity-v1.p.rapidapi.com/similarity/',
         qs: {
-            text1:  text1,
-            text2:  text2
+            text1: text1,
+            text2: text2
         },
         headers: {
             'x-rapidapi-host': 'twinword-text-similarity-v1.p.rapidapi.com',
