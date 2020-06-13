@@ -58,24 +58,23 @@ const LinkedOAuthProduction = new LinkedInStrategy(
     state: true,
   },
   function (accessToken, refreshToken, profile, done) {
+    // process.nextTick(function () {
+    //   return done(null, profile);
+    // });
     console.log(profile);
-    process.nextTick(function () {
-      return done(null, profile);
-    });
-
-    // users.findOrCreate(
-    //   { email: profile._json.email },
-    //   {
-    //     id: profile._json.id,
-    //     firstName: profile._json.first_name,
-    //     lastName: profile._json.last_name,
-    //   },
-    //   function (err, user) {
-    //     user.picture = profile.photos[0].value;
-    //     user.save();
-    //     done(err, profile);
-    //   }
-    // );
+    users.findOrCreate(
+      { email: profile.emails[0].value },
+      {
+        id: profile.id,
+        firstName: profile.name[0],
+        lastName: profile.name[1],
+      },
+      function (err, user) {
+        user.picture = profile.photos[0].value;
+        user.save();
+        done(err, user.id);
+      }
+    );
   }
 );
 
@@ -93,6 +92,7 @@ passport.deserializeUser((user, done) => {
 
 // Middleware to check if the user is authenticated
 function isUserAuthenticated(req, res, next) {
+  console.log(req.user);
   if (req.user) {
     next();
   } else {
