@@ -13,6 +13,11 @@ const usersSchema = new Schema(
     skills: { type: String },
     ideas: { type: String },
     matching: { type: Object },
+
+    displayName: { type: String },
+    picture: { type: String },
+    headline: {type: String },
+    interests: { type: Array },
   },
   {
     timestamps: true,
