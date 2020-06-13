@@ -30,10 +30,25 @@ app.get('/', function(req, res) {
     res.send("server success");
 });
 
+app.post("/users/add", (req, res) => {
+    const {id, name, email, location, introduction, skills, ideas} = req.body;
 
+    console.log(id);
 
+    const newUser = new users({
+        id,
+        name,
+        email,
+        location,
+        introduction,
+        skills,
+        ideas
+    });
 
-
-
+    newUser
+        .save()
+        .then(() => res.json(id))
+        .catch((err) => res.status(400).json("Error: " + err));
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
