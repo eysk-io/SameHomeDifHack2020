@@ -73,7 +73,7 @@ const LinkedOAuthProduction = new LinkedInStrategy(
         interests: profile.interests,
       },
       function (err, user) {
-        user.picture = profile.photos[3].value;
+        user.picture = profile.photos;
         user.email = profile.emails[0].value;
         user.displayName = profile.displayName;
         user.headline = "It's a Big World";

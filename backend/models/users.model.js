@@ -9,7 +9,7 @@ const usersSchema = new Schema(
     email: String,
     id: String,
     displayName: String,
-    picture: String,
+    picture: Array,
     headline: String,
     interests: Array,
   },
