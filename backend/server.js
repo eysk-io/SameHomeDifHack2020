@@ -11,7 +11,7 @@ app.use(express.json());
 require("dotenv").config();
 
 // MongoDB configuration
-const userProfile = require("./models/users.model");
+const users = require("./models/users.model");
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, {

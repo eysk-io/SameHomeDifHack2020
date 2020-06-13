@@ -1,19 +1,21 @@
 const mongoose = require("mongoose");
+const findOrCreate = require("mongoose-findorcreate");
 
 const Schema = mongoose.Schema;
 
-const postingsSchema = new Schema(
+const usersSchema = new Schema(
   {
-    firstName: { type: String },
-    lastName: { type: String },
+    id: { type: Number },
+    name: { type: String },
     email: { type: String },
     location: { type: String },
-    postTitle: { type: String },
-    description: { type: String },
+    introduction: { type: String },
+    skills: { type: String },
+    ideas: { type: String },
   },
   {
     timestamps: true,
   }
-);
+).plugin(findOrCreate);
 
-module.exports = mongoose.model("users", postingsSchema);
+module.exports = mongoose.model("users", usersSchema);
