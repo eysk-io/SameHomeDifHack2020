@@ -81,7 +81,7 @@ export default class ProfileModal extends Component {
                 <View style={styles.nameContainer}>
                     <Text style={styles.nameText}>Location: </Text>
                     <TextInput 
-                    style={styles.nameInput}
+                    style={styles.locationInput}
                     value={this.state.name}
                     onChange={this.handleLocationChange}
                     >
@@ -158,6 +158,11 @@ const styles = StyleSheet.create({
         width: 240,
         backgroundColor: "white",
         
+    },
+
+    locationInput: {
+        width: 216,
+        backgroundColor: 'white'
     },
 
     uploadText: {
