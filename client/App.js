@@ -13,7 +13,7 @@ export const RootStack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <RootStack.Navigator>
+      <RootStack.Navigator mode='modal'>
         <RootStack.Screen
           name='MainStackScreen'
           component={MainStackScreen}
