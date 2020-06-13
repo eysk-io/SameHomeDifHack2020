@@ -31,7 +31,7 @@ app.get('/', function(req, res) {
 });
 
 app.post("/users/add", (req, res) => {
-    const {id, name, email, location, introduction, skills, ideas} = req.body;
+    const {id, name, email, location, introduction, skills, ideas, matching} = req.body;
 
     const newUser = new users({
         id,
@@ -40,7 +40,8 @@ app.post("/users/add", (req, res) => {
         location,
         introduction,
         skills,
-        ideas
+        ideas,
+        matching,
     });
 
     newUser
@@ -87,11 +88,60 @@ const options = {
     }
 };
 
-app.get("/matching", (req, res) => {
-    request(options, function (error, response, body) {
+const matchTwo= (user1, user2) => {
+   let text1 = user1["ideas"];
+   let text2 = user2["ideas"];
+   let id1 = user1["id"];
+   let id2 = user2["id"];
+   let e1 = user1["email"];
+   let e2 = user2["email"];
+   let ops = getOption(text1, text2);
+   request(ops, function (error, response, body) {
         if (error) throw new Error(error);
         console.log(body);
-    });
+        let content = JSON.parse(body);
+        users.findOne({id: id1})
+           .then((user) => {
+               if(!user["matching"]){
+                   user["matching"] = {};
+               }
+               user["matching"] = {...user["matching"], [id2]: content["similarity"]};
+               user
+                   .save()
+                   .then(() => console.log(user))
+                   .catch((err) => console.log("Error: " + err));
+           });
+       users.findOne({id: id2})
+           .then((user) => {
+               if(!user["matching"]){
+                   user["matching"] = {};
+               }
+               user["matching"] = {...user["matching"], [id1]: content["similarity"]};
+               user
+                   .save()
+                   .then(() => console.log(user))
+                   .catch((err) => console.log("Error: " + err));
+           })
+
+   });
+
+};
+
+app.get("/matching", (req, res) => {
+   let user1 = {
+       "id": 10,
+       "name": "Mike",
+       "email": "Test",
+       "ideas": "I want to work on machine learning"
+   };
+   let user2 = {
+       "id": 20,
+       "name": "Tom",
+       "email": "Test",
+       "ideas": "I want to work on NLP"
+   };
+   matchTwo(user1, user2);
+   res.send("success");
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

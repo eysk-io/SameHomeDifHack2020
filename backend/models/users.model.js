@@ -12,6 +12,7 @@ const usersSchema = new Schema(
     introduction: { type: String },
     skills: { type: String },
     ideas: { type: String },
+    matching: { type: Object },
   },
   {
     timestamps: true,
