@@ -7,10 +7,10 @@ const Home = ({ navigation }) => {
             <Text>Home Page</Text>
             <TouchableOpacity
                 onPress={() => {
-                    navigation.navigate('Chat');
+                    navigation.navigate('MatchingPage');
                 }}
             >
-                <Text>To chat</Text>
+                <Text>To MatchingPage</Text>
             </TouchableOpacity>
         </View>
     );

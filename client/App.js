@@ -17,6 +17,7 @@ export default function App() {
         <RootStack.Screen
           name='MainStackScreen'
           component={MainStackScreen}
+          options={{ headerShown: false }}
         />
         <RootStack.Screen
           name='ChatWindowModal'
