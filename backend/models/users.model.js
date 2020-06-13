@@ -5,17 +5,20 @@ const Schema = mongoose.Schema;
 
 const usersSchema = new Schema(
   {
-    id: { type: Number },
-    name: { type: String },
-    email: { type: String },
-    location: { type: String },
-    introduction: { type: String },
-    skills: { type: String },
-    ideas: { type: String },
+    email: String,
+    id: Number,
+    firstName: String,
+    lastName: String,
+    picture: String,
   },
   {
     timestamps: true,
   }
 ).plugin(findOrCreate);
-
+/**
+    location: String,
+    introduction: String,
+    skills: String,
+    ideas: String,
+ */
 module.exports = mongoose.model("users", usersSchema);
