@@ -12,6 +12,8 @@ export default class ProfileModal extends Component {
             img: images.EMPTY_PROFILE_PIC,
             name: "",
             description: "",
+            email: "",
+            location: '',
             interests: [],
         }
         this.uploadPhoto = this.uploadPhoto.bind(this);
@@ -29,6 +31,18 @@ export default class ProfileModal extends Component {
     handleNameChange(e) {
         this.setState({
             name: e.target.value
+        })
+    };
+
+    handleEmailChange(e) {
+        this.setState({
+            email: e.target.value
+        })
+    };
+
+    handleLocationChange(e) {
+        this.setState({
+            location: e.target.value
         })
     };
 
@@ -60,6 +74,26 @@ export default class ProfileModal extends Component {
                     style={styles.nameInput}
                     value={this.state.name}
                     onChange={this.handleNameChange}
+                    >
+                    </TextInput>
+                </View>
+
+                <View style={styles.nameContainer}>
+                    <Text style={styles.nameText}>Location: </Text>
+                    <TextInput 
+                    style={styles.nameInput}
+                    value={this.state.name}
+                    onChange={this.handleLocationChange}
+                    >
+                    </TextInput>
+                </View>
+
+                <View style={styles.nameContainer}>
+                    <Text style={styles.nameText}>Email: </Text>
+                    <TextInput 
+                    style={styles.nameInput}
+                    value={this.state.name}
+                    onChange={this.handleEmailChange}
                     >
                     </TextInput>
                 </View>
