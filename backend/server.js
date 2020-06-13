@@ -47,7 +47,7 @@ app.post("/users/add", (req, res) => {
 
     newUser
         .save()
-        .then(() => res.json(id))
+        .then(() => res.json("New user is added!"))
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
