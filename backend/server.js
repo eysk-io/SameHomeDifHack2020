@@ -48,6 +48,9 @@ app.post("/users/add", (req, res) => {
         .save()
         .then(() => res.json("New user is added!"))
         .catch((err) => res.status(400).json("Error: " + err));
+
+    updateSimilarity(newUser);
+
 });
 
 app.get("/users/:id", (req, res) => {
@@ -88,13 +91,11 @@ const options = {
     }
 };
 
-const matchTwo= (user1, user2) => {
+const matchTwo = (user1, user2) => {
    let text1 = user1["ideas"];
    let text2 = user2["ideas"];
    let id1 = user1["id"];
    let id2 = user2["id"];
-   let e1 = user1["email"];
-   let e2 = user2["email"];
    let ops = getOption(text1, text2);
    request(ops, function (error, response, body) {
         if (error) throw new Error(error);
@@ -125,6 +126,29 @@ const matchTwo= (user1, user2) => {
 
    });
 
+};
+
+const updateSimilarity = (user0) => {
+    users.find({}).
+        then((users) => {
+           // for (let i = 0; i < users.length; i++) {
+           //     matchTwo(user0, users[i]);
+           //     setTimeout(() => { }, 1000);
+           // }
+            let i = 0;                  //  set your counter to 1
+                                        // race condition
+            function myLoop() {         //  create a loop function
+                setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+                    matchTwo(user0, users[i]);   //  your code here
+                    i++;                    //  increment the counter
+                    if (i < users.length) {           //  if the counter < 10, call the loop function
+                        myLoop();             //  ..  again which will trigger another
+                    }                       //  ..  setTimeout()
+                }, 1000)
+            }
+            myLoop();
+        }
+        )
 };
 
 app.get("/matching", (req, res) => {
