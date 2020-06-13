@@ -1,16 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { BorderlessButton } from 'react-native-gesture-handler';
-import { LOGO } from '../../assets';
+import { images } from '../../assets';
 
 const Home = ({ navigation }) => {
     return (
         <View style={{flexDirection: 'column', alignItems: 'center', flex: 1, backgroundColor: "#142352"}}>
 
             <View style={styles.header}>
-                <Image style={styles.logo} source={ LOGO }/>
+                <Image style={styles.logo} source={ images.LOGO }/>
                 <Text style={styles.headerText}>Home Page</Text>
-
             </View>
 
             <View style={styles.buttonContainer}>
@@ -42,7 +40,7 @@ function facebookLogin() {
 
 function linkedinLogin() {
 
-}
+};
 
 const styles = StyleSheet.create({
     header: {
