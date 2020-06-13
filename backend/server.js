@@ -59,20 +59,23 @@ const LinkedOAuthProduction = new LinkedInStrategy(
   },
   function (accessToken, refreshToken, profile, done) {
     console.log(profile);
+    process.nextTick(function () {
+      return done(null, profile);
+    });
 
-    users.findOrCreate(
-      { email: profile._json.email },
-      {
-        id: profile._json.id,
-        firstName: profile._json.first_name,
-        lastName: profile._json.last_name,
-      },
-      function (err, user) {
-        user.picture = profile.photos[0].value;
-        user.save();
-        done(err, profile);
-      }
-    );
+    // users.findOrCreate(
+    //   { email: profile._json.email },
+    //   {
+    //     id: profile._json.id,
+    //     firstName: profile._json.first_name,
+    //     lastName: profile._json.last_name,
+    //   },
+    //   function (err, user) {
+    //     user.picture = profile.photos[0].value;
+    //     user.save();
+    //     done(err, profile);
+    //   }
+    // );
   }
 );
 
