@@ -10,9 +10,30 @@ app.use(cors());
 app.use(express.json());
 require("dotenv").config();
 
+// MongoDB configuration
+const userProfile = require("./models/users.model");
+
+const uri = process.env.ATLAS_URI;
+mongoose.connect(uri, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+});
+
+const connection = mongoose.connection;
+connection.once("open", () => {
+    console.log("MongoDB database connection established successfully");
+});
+
 
 app.get('/', function(req, res) {
     res.send("server success");
 });
+
+
+
+
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
