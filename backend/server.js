@@ -115,6 +115,22 @@ app.get("/userdata", isUserAuthenticated, (req, res) => {
   });
 });
 
+// need to debug and test - this route should be a post request to ask to delete user profile
+app.post("/deleteUser", isUserAuthenticated, (req, res) => {
+  users.findOne({ email: req.user }).then((user) => {
+    user
+      .delete()
+      .then(() => {
+        console.log("Deleted user successfully");
+        res.sendStatus(204);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(404);
+      });
+  });
+});
+
 // Logout route
 app.get("/logout", (req, res) => {
   req.logout();
