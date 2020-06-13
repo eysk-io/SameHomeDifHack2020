@@ -21,6 +21,7 @@
   "devDependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "passport-linkedin-oauth2": "^2.0.0",
     "request": "^2.88.2"
   }
 }

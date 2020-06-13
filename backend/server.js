@@ -34,6 +34,7 @@ connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
 
+//Ben
 //CookieSession Configuration
 app.use(
   cookieSession({
@@ -44,10 +45,6 @@ app.use(
 
 app.use(passport.initialize()); // Used to initialize passport
 app.use(passport.session()); // Used to persist login sessions
-
-app.get("/", function (req, res) {
-  res.send("server success");
-});
 
 //LinkedIn Strategy
 const LinkedOAuthProduction = new LinkedInStrategy(
@@ -90,6 +87,116 @@ passport.use(LinkedOAuthProduction);
 // Used to stuff a piece of information into a cookie
 passport.serializeUser((user, done) => {
   done(null, user);
+});
+
+// Used to decode the received cookie and persist session
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+// Middleware to check if the user is authenticated
+function isUserAuthenticated(req, res, next) {
+  console.log(req.user);
+  if (req.user) {
+    next();
+  } else {
+    res.send("You must login!");
+  }
+}
+
+//  using this to retrieve user data from the Passport 'profile' object
+app.get("/userdata", isUserAuthenticated, (req, res) => {
+  users.find({ email: req.user }, function (err, result) {
+    console.log(result);
+    res.send(result);
+  });
+});
+
+// need to debug and test - this route should be a post request to ask to delete user profile
+app.post("/deleteUser", isUserAuthenticated, (req, res) => {
+  users.findOne({ email: req.user }).then((user) => {
+    user
+      .delete()
+      .then(() => {
+        console.log("Deleted user successfully");
+        res.sendStatus(204);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(404);
+      });
+  });
+});
+
+// Logout route
+app.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/");
+});
+
+// Secret route
+app.get("/secret", isUserAuthenticated, (req, res) => {
+  res.send("You have reached the secret route");
+});
+
+// passport.authenticate middleware is used here to authenticate the request for linkedin
+app.get(
+  "/auth/linkedin",
+  passport.authenticate("linkedin", function (req, res) {
+    //scope: ["(no scope)"],
+    //scope: ["r_emailaddress", "r_liteprofile"], // Used to specify the required data; we only want read-only access to public information
+  })
+);
+
+// GET /auth/linkedin/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get(
+  "/auth/linkedin/callback",
+  passport.authenticate("linkedin", { failureRedirect: "/login" }),
+  (req, res) => {
+    console.log("Successfully logged in");
+    res.redirect("/secret");
+  }
+);
+
+//Ben
+
+app.get("/", function (req, res) {
+  res.send("server success");
+});
+
+app.post("/users/add", (req, res) => {
+  const {
+    id,
+    name,
+    email,
+    location,
+    introduction,
+    skills,
+    ideas,
+    matching,
+  } = req.body;
+
+  const newUser = new users({
+    id,
+    name,
+    email,
+    location,
+    introduction,
+    skills,
+    ideas,
+    matching,
+  });
+
+  newUser
+    .save()
+    .then(() => res.json("New user is added!"))
+    .catch((err) => res.status(400).json("Error: " + err));
+
+  updateSimilarity(newUser);
 });
 
 // Used to decode the received cookie and persist session
@@ -224,11 +331,78 @@ const options = {
   },
 };
 
-app.get("/matching", (req, res) => {
-  request(options, function (error, response, body) {
+const matchTwo = (user1, user2) => {
+  let text1 = user1["ideas"];
+  let text2 = user2["ideas"];
+  let id1 = user1["id"];
+  let id2 = user2["id"];
+  let ops = getOption(text1, text2);
+  request(ops, function (error, response, body) {
     if (error) throw new Error(error);
     console.log(body);
+    let content = JSON.parse(body);
+    users.findOne({ id: id1 }).then((user) => {
+      if (!user["matching"]) {
+        user["matching"] = {};
+      }
+      user["matching"] = { ...user["matching"], [id2]: content["similarity"] };
+      user
+        .save()
+        .then(() => console.log(user))
+        .catch((err) => console.log("Error: " + err));
+    });
+    users.findOne({ id: id2 }).then((user) => {
+      if (!user["matching"]) {
+        user["matching"] = {};
+      }
+      user["matching"] = { ...user["matching"], [id1]: content["similarity"] };
+      user
+        .save()
+        .then(() => console.log(user))
+        .catch((err) => console.log("Error: " + err));
+    });
   });
+};
+
+const updateSimilarity = (user0) => {
+  users.find({}).then((users) => {
+    // for (let i = 0; i < users.length; i++) {
+    //     matchTwo(user0, users[i]);
+    //     setTimeout(() => { }, 1000);
+    // }
+    let i = 0; //  set your counter to 1
+    // race condition
+    function myLoop() {
+      //  create a loop function
+      setTimeout(function () {
+        //  call a 3s setTimeout when the loop is called
+        matchTwo(user0, users[i]); //  your code here
+        i++; //  increment the counter
+        if (i < users.length) {
+          //  if the counter < 10, call the loop function
+          myLoop(); //  ..  again which will trigger another
+        } //  ..  setTimeout()
+      }, 1000);
+    }
+    myLoop();
+  });
+};
+
+app.get("/matching", (req, res) => {
+  let user1 = {
+    id: 10,
+    name: "Mike",
+    email: "Test",
+    ideas: "I want to work on machine learning",
+  };
+  let user2 = {
+    id: 20,
+    name: "Tom",
+    email: "Test",
+    ideas: "I want to work on NLP",
+  };
+  matchTwo(user1, user2);
+  res.send("success");
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
