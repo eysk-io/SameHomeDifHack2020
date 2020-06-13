@@ -3,9 +3,12 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import ModalStackScreen from './screens/ModalStackScreen';
+import ChatWindowModal from './screens/chat/ChatWindowModal';
+import MatchProfileModal from './screens/matching/MatchProfileModal';
+import GroupsModal from './screens/profile/GroupsModal';
+import ProfileModal from './screens/profile/ProfileModal';
 import MainStackScreen from './screens/MainStackScreen';
-const RootStack = createStackNavigator();
+export const RootStack = createStackNavigator();
 
 export default function App() {
   return (
@@ -16,8 +19,20 @@ export default function App() {
           component={MainStackScreen}
         />
         <RootStack.Screen
-          name='ModalStackScreen'
-          component={ModalStackScreen}
+          name='ChatWindowModal'
+          component={ChatWindowModal}
+        />
+        <RootStack.Screen
+          name='MatchProfileModal'
+          component={MatchProfileModal}
+        />
+        <RootStack.Screen
+          name='GroupsModal'
+          component={GroupsModal}
+        />
+        <RootStack.Screen
+          name='ProfileModal'
+          component={ProfileModal}
         />
       </RootStack.Navigator>
     </NavigationContainer>

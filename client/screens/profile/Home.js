@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 
-const Home = () => {
+const Home = ({ navigation }) => {
     return (
         <View>
             <Text>Home Page</Text>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('MatchingPage');
+                }}
+            >
+                <Text>To profile</Text>
+            </TouchableOpacity>
         </View>
     );
 };
