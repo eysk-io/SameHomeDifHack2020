@@ -1,19 +1,25 @@
+/*eslint-disable prettier/prettier */
+import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import ModalStackScreen from './screens/ModalStackScreen';
+import MainStackScreen from './screens/MainStackScreen';
+const RootStack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+    <NavigationContainer>
+      <RootStack.Navigator>
+        <RootStack.Screen
+          name='MainStackScreen'
+          component={MainStackScreen}
+        />
+        <RootStack.Screen
+          name='ModalStackScreen'
+          component={ModalStackScreen}
+        />
+      </RootStack.Navigator>
+    </NavigationContainer>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+};
