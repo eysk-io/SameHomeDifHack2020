@@ -3,13 +3,15 @@ const findOrCreate = require("mongoose-findorcreate");
 
 const Schema = mongoose.Schema;
 
+//note: id is linkedin id, _id is the mongoDB query id
 const usersSchema = new Schema(
   {
     email: String,
     id: String,
-    firstName: String,
-    lastName: String,
+    displayName: String,
     picture: String,
+    headline: String,
+    interests: Array,
   },
   {
     timestamps: true,

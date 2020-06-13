@@ -20,6 +20,7 @@ require("dotenv").config();
 
 // MongoDB configuration
 const users = require("./models/users.model");
+const { profileEnd } = require("console");
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, {
@@ -66,13 +67,19 @@ const LinkedOAuthProduction = new LinkedInStrategy(
       { email: profile.emails[0].value },
       {
         id: profile.id,
-        firstName: profile.name[0],
-        lastName: profile.name[1],
+        displayName: profile.displayName,
+        picture: profile.picture,
+        headline: profile.headline,
+        interests: profile.interests,
       },
       function (err, user) {
-        user.picture = profile.photos[0].value;
+        user.picture = profile.photos[3].value;
+        user.email = profile.emails[0].value;
+        user.displayName = profile.displayName;
+        user.headline = "It's a Big World";
+        user.interests = [];
         user.save();
-        done(err, user.id);
+        done(err, user.email);
       }
     );
   }
@@ -102,7 +109,7 @@ function isUserAuthenticated(req, res, next) {
 
 //  using this to retrieve user data from the Passport 'profile' object
 app.get("/userdata", isUserAuthenticated, (req, res) => {
-  Users.find({ email: req.user }, function (err, result) {
+  users.find({ email: req.user }, function (err, result) {
     console.log(result);
     res.send(result);
   });
