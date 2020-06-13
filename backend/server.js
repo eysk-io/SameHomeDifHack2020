@@ -55,6 +55,24 @@ app.get("/users/:id", (req, res) => {
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
+
+const getOption = (text1, text2) =>{
+    const option = {
+        method: 'GET',
+        url: 'https://twinword-text-similarity-v1.p.rapidapi.com/similarity/',
+        qs: {
+            text1:  text1,
+            text2:  text2
+        },
+        headers: {
+            'x-rapidapi-host': 'twinword-text-similarity-v1.p.rapidapi.com',
+            'x-rapidapi-key': 'f3512dba28msha0bfafff623f90fp18ccabjsn78a20a660e54',
+            useQueryString: true
+        }
+    };
+    return option;
+};
+
 const options = {
     method: 'GET',
     url: 'https://twinword-text-similarity-v1.p.rapidapi.com/similarity/',
