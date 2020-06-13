@@ -16,8 +16,4 @@ const postingsSchema = new Schema(
   }
 );
 
-// const Posting = mongoose.model("Posting", postingsSchema);
-
-// module.exports = { Posting };
-
 module.exports = mongoose.model("users", postingsSchema);
