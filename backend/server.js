@@ -192,11 +192,16 @@ app.post("/users/add", (req, res) => {
 });
 
 app.get("/users/:id", (req, res) => {
-    users.find({id: req.params.id})
+    users.findOne({id: req.params.id})
         .then((user) => res.json(user))
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
+app.get("/user/matching:id", (req, res) => {
+    users.findOne({id: req.params.id})
+        .then((user) => res.json(user["matching"]))
+        .catch((err) => res.status(400).json("Error: " + err));
+});
 
 const getOption = (text1, text2) =>{
     const option = {
