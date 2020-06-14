@@ -165,7 +165,7 @@ app.get("/", function (req, res) {
 });
 
 app.post("/users/add", (req, res) => {
-    const {id, name, email, location, introduction, skills, ideas, matching} = req.body;
+    const {id, name, email, location, introduction, skills, ideas, matching, displayName, picture, headline, interests} = req.body;
 
     const newUser = new users({
         id,
@@ -176,6 +176,10 @@ app.post("/users/add", (req, res) => {
         skills,
         ideas,
         matching,
+        displayName,
+        picture,
+        headline,
+        interests,
     });
 
     newUser
@@ -271,21 +275,54 @@ const updateSimilarity = (user0) => {
            //     matchTwo(user0, users[i]);
            //     setTimeout(() => { }, 1000);
            // }
-            let i = 0;                  //  set your counter to 1
-                                        // race condition
-            function myLoop() {         //  create a loop function
-                setTimeout(function() {   //  call a 3s setTimeout when the loop is called
-                    matchTwo(user0, users[i]);   //  your code here
-                    i++;                    //  increment the counter
-                    if (i < users.length) {           //  if the counter < 10, call the loop function
-                        myLoop();             //  ..  again which will trigger another
-                    }                       //  ..  setTimeout()
-                }, 1000)
+            let i = 0;
+                                        // race condition !!!
+            function myLoop() {
+                setTimeout(function() {
+                    matchTwo(user0, users[i]);
+                    i++;
+                    if (i < users.length) {
+                        myLoop();
+                    }
+                }, 500)
             }
             myLoop();
         }
         )
 };
+
+// const updateSimilarityOne = (user0) => {
+//
+//     let text0 = user0["ideas"];
+//     let id0 = user0["id"];
+//     let map = {};
+//
+//     users.find({})
+//         .then((users => users.filter(user => user.id !== user0.id)))
+//         .then((users) => {
+//             users.forEach(user => {
+//                 let text2 = user["ideas"];
+//                 let id2 = user["id"];
+//                 let ops = getOption(text0, text2);
+//                 request(ops, function (error, response, body) {
+//                     if (error) throw new Error(error);
+//                     let content = JSON.parse(body);
+//                     let score = content["similarity"];
+//                     map[id2] = {score: score, user: user};
+//                 })
+//             });
+//         })
+//         .then(() => {
+//             users.findOne({id: id0}).then((user) => {
+//                 user["matching"] = map;
+//                 user
+//                     .save()
+//                     .then(() => console.log(user))
+//                     .catch((err) => console.log("Error: " + err));
+//             })
+//         })
+// };
+
 
 app.get("/matching", (req, res) => {
    let user1 = {
