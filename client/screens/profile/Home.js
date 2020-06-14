@@ -1,15 +1,11 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
-import { images } from '../../assets';
 
 const Home = ({ navigation }) => {
     const [authResult, setAuthResult] = useState({});
-
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handlRedirect = async event => {
         WebBrowser.dismissBrowser();
@@ -21,6 +17,21 @@ const Home = ({ navigation }) => {
 
     function removeLinkingListener() {
         Linking.removeEventListener('url', handlRedirect);
+    }
+
+    const fetchData = useCallback(async () => {
+        const res = await fetch('http://192.168.0.32:5000/userdata', {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        let data = await res.json()
+        console.log(data);
+    }, [])
+
+    async function handleRegistration() {
+        fetchData();
+        navigation.navigate('ProfileModal');
     }
 
     const linkedInLogin = async () => {
@@ -39,45 +50,42 @@ const Home = ({ navigation }) => {
             console.log('ERROR:', err);
         }
 
+        setIsLoggedIn(true);
+
         removeLinkingListener();
     }
 
-    async function fetchData() {
-        fetch('http://192.168.0.32:5000/userdata')
-            .then(res => {
-                console.log(res);
-            }).catch(err => {
-                console.error(err);
-            });
-    }
-
-
     return (
-        (authResult.type && authResult.type === 'success') ?
-            <Text>Success!</Text> :
-            (<View style={{ flexDirection: 'column', alignItems: 'center', flex: 1, backgroundColor: "#142352" }}>
-
-                <View style={styles.header}>
-                    <Image style={styles.logo} source={images.LOGO} />
-                    <Text style={styles.headerText}>Home Page</Text>
-                </View>
-
-                <View style={styles.buttonContainer}>
-
-                    <TouchableOpacity style={styles.buttonStyle}>
-                        <Text style={styles.buttonText}>LOG IN WITH GOOGLE</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.buttonStyle}>
-                        <Text style={styles.buttonText}>LOG IN WITH FACEBOOK</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.buttonStyle} onPress={linkedInLogin}>
-                        <Text style={styles.buttonText}>LOG IN WITH LINKEDIN</Text>
-                    </TouchableOpacity>
-
-                </View>
-            </View>)
+        <View style={{ flexDirection: 'column', alignItems: 'center', flex: 1, backgroundColor: "#142352" }}>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>SPARK</Text>
+            </View>
+            {
+                isLoggedIn ?
+                    (
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.buttonStyle} onPress={() => handleRegistration()}>
+                                <Text style={styles.buttonText}>CLICK TO CONTINUE!</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) :
+                    (
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.buttonStyle}>
+                                <Text style={styles.buttonText}>LOG IN WITH FACEBOOK</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttonStyle} onPress={linkedInLogin}>
+                                <Text style={styles.buttonText}>LOG IN WITH LINKEDIN</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttonStyle} onPress={() => {
+                                navigation.navigate('MatchingPage');
+                            }}>
+                                <Text style={styles.buttonText}>LOG IN WITH GOOGLE</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
+            }
+        </View >
     );
 };
 
@@ -85,7 +93,6 @@ const styles = StyleSheet.create({
     header: {
         marginTop: 50,
         flex: 1,
-        flexDirection: "row",
         justifyContent: "center"
     },
 
@@ -110,7 +117,8 @@ const styles = StyleSheet.create({
         width: 300,
         flex: 2,
         marginBottom: 70,
-        marginTop: 60
+        marginTop: 60,
+
     },
 
     buttonStyle: {
@@ -120,6 +128,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: 75,
         justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 12,
+        },
+        shadowOpacity: 0.58,
+        shadowRadius: 16.00,
+
+        elevation: 24,
     },
 
     buttonText: {

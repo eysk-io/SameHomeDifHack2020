@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, SafeAreaView, View, StyleSheet, Image } from 'react-native';
 
-const MatchProfileModal = ({ img, name, bio, skills, matched }) => {
+const MatchProfileModal = ({ img, name, bio }) => {
     return (
         <SafeAreaView style={styles.container}>
             <Image
@@ -10,9 +10,7 @@ const MatchProfileModal = ({ img, name, bio, skills, matched }) => {
             />
             <View style={styles.text}>
                 <Text style={styles.name}>{name}</Text>
-                <Text>{bio}</Text>
-                <Text>{skills}</Text>
-                <Text>{matched.toString()}</Text>
+                <Text style={styles.bio}>{bio}</Text>
             </View>
         </SafeAreaView>
     );
@@ -25,9 +23,21 @@ const styles = StyleSheet.create({
     },
     text: {
         margin: 10,
+        flex: 1,
+        alignItems: 'center',
     },
     name: {
+        color: '#142352',
         fontSize: 40,
+        fontWeight: 'bold',
+        padding: 10,
+        borderRadius: 25
+    },
+    bio: {
+        marginTop: 15,
+        color: '#142352',
+        fontSize: 15,
+        fontWeight: 'bold',
     },
     img: {
         marginTop: 35,
@@ -35,8 +45,8 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         borderRadius: 200,
-        borderWidth: 8,
-        borderColor: 'black'
+        borderWidth: 5,
+        borderColor: '#142352'
     }
 })
 
