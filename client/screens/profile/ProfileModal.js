@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, TextInput, CheckBox, Alert } from 'react-native';
 import { images } from '../../assets';
 import { Select } from '@material-ui/core/Select';
 import { NativeSelect } from '@material-ui/core/NativeSelect';
@@ -13,12 +13,17 @@ export default class ProfileModal extends Component {
             name: "",
             description: "",
             email: "",
-            location: '',
+            location: "",
             interests: [],
+            whiteboarding: false,
+            mentor: false,
+            project: false
         }
         this.uploadPhoto = this.uploadPhoto.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-        this.handleSkillChange = this.handleSkillChange.bind(this);
+        this.handleWhiteCheck = this.handleWhiteCheck.bind(this);
+        this.handleProjectCheck = this.handleProjectCheck.bind(this);
+        this.handleMentorCheck = this.handleMentorCheck.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
     };
 
@@ -50,8 +55,50 @@ export default class ProfileModal extends Component {
 
     };
 
-    handleSkillChange() {
+    handleWhiteCheck(e) {
+        if (this.state.whiteboarding) {
+            this.setState({
+                whiteboarding: false
+            });
+        } else {
+            this.setState({
+                whiteboarding: true
+            });
+        }
+    };
 
+    handleMentorCheck(e) {
+        if (this.state.mentor) {
+            this.setState({
+                mentor: false
+            });
+        } else {
+            this.setState({
+                mentor: true
+            });
+        }
+    }
+
+    handleProjectCheck(e) {
+        if (this.state.project) {
+            this.setState({
+                project: false
+            });
+        } else {
+            this.setState({
+                project: true
+            });
+        }
+    };
+
+    handleNext() {
+        if (this.state.name.trim() === "" || this.state.location.trim() == "" || this.state.email.trim() === "" || !this.state.project && !this.state.whiteboarding && !this.state.mentor) {
+            Alert.alert("Please fill out the all starred fields!");
+        } else {
+            if (this.state.project) this.state.interests.push("project");
+            if (this.state.mentor) this.state.interests.push("mentor");
+            if (this.state.whiteboarding) this.state.interests.push("whiteboard");
+        }
     }
 
     render() {
@@ -110,16 +157,27 @@ export default class ProfileModal extends Component {
                     </TextInput>
                 </View>
 
-                <View style={styles.Container}>
+                <View style={styles.checkboxContainer}>
                     <Text style={styles.subText}>Interests:</Text>
-                    {/* <Select 
-                    multiple 
-                    value={this.state.interests} 
-                    onChange={this.handleSkillChange} 
-                    input={<input/>}
-                    >
-                        </Select> */}
+
+                    <View style={{ flexDirection: "row"}}>
+                        <CheckBox title='whiteboarding' value={this.state.whiteboarding} onChange={this.handleWhiteCheck}></CheckBox>
+                        <Text style={styles.check}>Whiteboarding</Text>
+                    </View>
+
+                    <View style={{ flexDirection: "row"}}>
+                        <CheckBox title='project' value={this.state.project} onChange={this.handleProjectCheck}></CheckBox>
+                        <Text style={styles.check}>Starting a new project</Text>
+                    </View>
+
+                    <View style={{ flexDirection: "row"}}>
+                    <CheckBox title='mentor' value={this.state.mentor} onChange={this.handleMentorCheck}></CheckBox>
+                        <Text style={styles.check}>Finding a mentor/peer</Text>
+                    </View>
                 </View>
+                <TouchableOpacity style={styles.nextButton} onPress={this.handleNext}>
+                        <Text style={styles.nextText}>NEXT</Text>
+                </TouchableOpacity>
 
             </ScrollView>
         );
@@ -180,6 +238,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 
+    nextText: {
+        fontWeight: "bold",
+        fontSize: 20,
+        backgroundColor: "#586f7c", 
+        textAlign: "center",
+        padding: 10
+    },
+    
+    nextButton: {
+        marginTop: 30
+    },
+
     nameContainer: {
         alignItems: "center",
         marginTop: 50,
@@ -197,20 +267,30 @@ const styles = StyleSheet.create({
         marginTop: 50
     },
 
+    checkboxContainer: {
+        marginTop: 50,
+        alignItems: "flex-start"
+    },
+
     subText: {
         color: "white",
         fontSize: 20,
         marginRight: 200
     },
 
+
     descriptionBox: {
         width: 300,
         height: 100,
         backgroundColor: "white"
-    }
+    },
+
+    check: {
+        color: "white",
+        paddingTop: 5
+    },
 });
 
-const listOfInterests = ["Whiteboarding", "Build a Project"];
 
 
 
