@@ -5,13 +5,19 @@ const Schema = mongoose.Schema;
 
 const usersSchema = new Schema(
   {
-    id: { type: Number },
+    id: { type: String },
     name: { type: String },
     email: { type: String },
     location: { type: String },
     introduction: { type: String },
     skills: { type: String },
     ideas: { type: String },
+    matching: { type: Object },
+
+    displayName: { type: String },
+    picture: { type: Array },
+    headline: {type: String },
+    interests: { type: Array },
   },
   {
     timestamps: true,
