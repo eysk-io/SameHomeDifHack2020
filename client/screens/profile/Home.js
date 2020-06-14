@@ -1,45 +1,84 @@
-import React from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 import { images } from '../../assets';
 
 const Home = ({ navigation }) => {
+    const [authResult, setAuthResult] = useState({});
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const handlRedirect = async event => {
+        WebBrowser.dismissBrowser();
+    };
+
+    function addLinkingListener() {
+        Linking.addEventListener('url', handlRedirect);
+    };
+
+    function removeLinkingListener() {
+        Linking.removeEventListener('url', handlRedirect);
+    }
+
+    const linkedInLogin = async () => {
+        let redirectUrl = await Linking.getInitialURL();
+        let authUrl = 'http://192.168.0.32:5000/auth/linkedin'
+
+        addLinkingListener();
+
+        try {
+            let authResult = await WebBrowser.openAuthSessionAsync(
+                authUrl,
+                redirectUrl
+            )
+            await setAuthResult({ authResult: authResult });
+        } catch (err) {
+            console.log('ERROR:', err);
+        }
+
+        removeLinkingListener();
+    }
+
+    async function fetchData() {
+        fetch('http://192.168.0.32:5000/userdata')
+            .then(res => {
+                console.log(res);
+            }).catch(err => {
+                console.error(err);
+            });
+    }
+
+
     return (
-        <View style={{flexDirection: 'column', alignItems: 'center', flex: 1, backgroundColor: "#142352"}}>
+        (authResult.type && authResult.type === 'success') ?
+            <Text>Success!</Text> :
+            (<View style={{ flexDirection: 'column', alignItems: 'center', flex: 1, backgroundColor: "#142352" }}>
 
-            <View style={styles.header}>
-                <Image style={styles.logo} source={ images.LOGO }/>
-                <Text style={styles.headerText}>Home Page</Text>
-            </View>
+                <View style={styles.header}>
+                    <Image style={styles.logo} source={images.LOGO} />
+                    <Text style={styles.headerText}>Home Page</Text>
+                </View>
 
-            <View style={styles.buttonContainer}>
+                <View style={styles.buttonContainer}>
 
-                <TouchableOpacity style={styles.buttonStyle} onPress={googleLogin}>
-                    <Text style={styles.buttonText}>LOG IN WITH GOOGLE</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle}>
+                        <Text style={styles.buttonText}>LOG IN WITH GOOGLE</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.buttonStyle} onPress={facebookLogin}>
-                    <Text style={styles.buttonText}>LOG IN WITH FACEBOOK</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle}>
+                        <Text style={styles.buttonText}>LOG IN WITH FACEBOOK</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.buttonStyle} onPress={linkedinLogin}>
-                    <Text style={styles.buttonText}>LOG IN WITH LINKEDIN</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={linkedInLogin}>
+                        <Text style={styles.buttonText}>LOG IN WITH LINKEDIN</Text>
+                    </TouchableOpacity>
 
-            </View>
-        </View>
+                </View>
+            </View>)
     );
-};
-
-function googleLogin() {
-
-};
-
-function facebookLogin() {
-
-};
-
-function linkedinLogin() {
-
 };
 
 const styles = StyleSheet.create({
@@ -54,7 +93,7 @@ const styles = StyleSheet.create({
         fontSize: 50,
         color: "white",
         fontWeight: "bold",
-        textAlign: "center"     
+        textAlign: "center"
     },
 
     logo: {
