@@ -180,15 +180,15 @@ app.post("/users/add", (req, res) => {
 
     newUser
         .save()
-        .then(() => res.json("New user is added!"))
+        .then(() => {
+            updateSimilarity(newUser);
+            res.json("New user is added!");})
         .catch((err) => res.status(400).json("Error: " + err));
-
-    updateSimilarity(newUser);
 
 });
 
 app.get("/users/:id", (req, res) => {
-    users.findById(req.params.id)
+    users.find({id: req.params.id})
         .then((user) => res.json(user))
         .catch((err) => res.status(400).json("Error: " + err));
 });
@@ -235,12 +235,13 @@ const matchTwo = (user1, user2) => {
         if (error) throw new Error(error);
         console.log(body);
         let content = JSON.parse(body);
+        let score = content["similarity"];
         users.findOne({id: id1})
            .then((user) => {
                if(!user["matching"]){
                    user["matching"] = {};
                }
-               user["matching"] = {...user["matching"], [id2]: content["similarity"]};
+               user["matching"] = {...user["matching"], [id2]: {score: score, user: user2}};
                user
                    .save()
                    .then(() => console.log(user))
@@ -251,7 +252,7 @@ const matchTwo = (user1, user2) => {
                if(!user["matching"]){
                    user["matching"] = {};
                }
-               user["matching"] = {...user["matching"], [id1]: content["similarity"]};
+               user["matching"] = {...user["matching"], [id1]: {score: score, user: user1}};
                user
                    .save()
                    .then(() => console.log(user))
@@ -263,8 +264,9 @@ const matchTwo = (user1, user2) => {
 };
 
 const updateSimilarity = (user0) => {
-    users.find({}).
-        then((users) => {
+    users.find({})
+        .then((users => users.filter(user => user.id !== user0.id)))
+        .then((users) => {
            // for (let i = 0; i < users.length; i++) {
            //     matchTwo(user0, users[i]);
            //     setTimeout(() => { }, 1000);
