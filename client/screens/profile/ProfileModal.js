@@ -25,6 +25,7 @@ export default class ProfileModal extends Component {
         this.handleProjectCheck = this.handleProjectCheck.bind(this);
         this.handleMentorCheck = this.handleMentorCheck.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleNext = this.handleNext.bind(this);
     };
 
     handleDescriptionChange(e) {
