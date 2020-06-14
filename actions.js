@@ -7,7 +7,7 @@ const selectMatching = (currentid, targetid, selection) => {
 
     fetch(url + "/user/select", {
         method: 'POST',
-        body: {userid: currentid, targetid: targetid, selection: selection}
+        body: JSON.stringify({userid: currentid, targetid: targetid, selection: selection})
     })
         .then(res => res.json())
         .then(user => {
@@ -22,7 +22,7 @@ const addNewUser = (id, name, email, location, introduction, skills, ideas, matc
     //use any number of fields as appropriate
     fetch(url + "/users/add", {
         method: 'POST',
-        body: {id: id, name: name, email: email, location: location, introduction: introduction, skills: skills, ideas: ideas, matching: matching, displayName:displayName, picture: picture, headline: headline, interests: interests}
+        body: JSON.stringify({id: id, name: name, email: email, location: location, introduction: introduction, skills: skills, ideas: ideas, matching: matching, displayName:displayName, picture: picture, headline: headline, interests: interests})
     })
         .then(res => res.json())
         .then(res => {
@@ -48,5 +48,8 @@ getMatching = (id) => {
         .then(res => res.json())
         .then(matching => {
             console.log(matching);
+            let list = Object.values(matching);
+            list.sort(function(a, b){return a["score"] - b["score"]});
+            console.log(list);
         }).catch(err => console.log(err));
 };
