@@ -101,7 +101,8 @@ function isUserAuthenticated(req, res, next) {
 }
 
 //  using this to retrieve user data from the Passport 'profile' object
-app.get("/userdata", isUserAuthenticated, (req, res) => {
+// app.get("/userdata", isUserAuthenticated, (req, res) => {
+app.get("/userdata", (req, res) => {
     users.find({ email: req.user }, function (err, result) {
         console.log(result);
         res.send(result);
@@ -165,7 +166,7 @@ app.get("/", function (req, res) {
 });
 
 app.post("/users/add", (req, res) => {
-    const {id, name, email, location, introduction, skills, ideas, matching} = req.body;
+    const { id, name, email, location, introduction, skills, ideas, matching } = req.body;
 
     const newUser = new users({
         id,
@@ -182,25 +183,26 @@ app.post("/users/add", (req, res) => {
         .save()
         .then(() => {
             updateSimilarity(newUser);
-            res.json("New user is added!");})
+            res.json("New user is added!");
+        })
         .catch((err) => res.status(400).json("Error: " + err));
 
 });
 
 app.get("/users/:id", (req, res) => {
-    users.find({id: req.params.id})
+    users.find({ id: req.params.id })
         .then((user) => res.json(user))
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
 
-const getOption = (text1, text2) =>{
+const getOption = (text1, text2) => {
     const option = {
         method: 'GET',
         url: 'https://twinword-text-similarity-v1.p.rapidapi.com/similarity/',
         qs: {
-            text1:  text1,
-            text2:  text2
+            text1: text1,
+            text2: text2
         },
         headers: {
             'x-rapidapi-host': 'twinword-text-similarity-v1.p.rapidapi.com',
@@ -226,40 +228,40 @@ const options = {
 };
 
 const matchTwo = (user1, user2) => {
-   let text1 = user1["ideas"];
-   let text2 = user2["ideas"];
-   let id1 = user1["id"];
-   let id2 = user2["id"];
-   let ops = getOption(text1, text2);
-   request(ops, function (error, response, body) {
+    let text1 = user1["ideas"];
+    let text2 = user2["ideas"];
+    let id1 = user1["id"];
+    let id2 = user2["id"];
+    let ops = getOption(text1, text2);
+    request(ops, function (error, response, body) {
         if (error) throw new Error(error);
         console.log(body);
         let content = JSON.parse(body);
         let score = content["similarity"];
-        users.findOne({id: id1})
-           .then((user) => {
-               if(!user["matching"]){
-                   user["matching"] = {};
-               }
-               user["matching"] = {...user["matching"], [id2]: {score: score, user: user2}};
-               user
-                   .save()
-                   .then(() => console.log(user))
-                   .catch((err) => console.log("Error: " + err));
-           });
-       users.findOne({id: id2})
-           .then((user) => {
-               if(!user["matching"]){
-                   user["matching"] = {};
-               }
-               user["matching"] = {...user["matching"], [id1]: {score: score, user: user1}};
-               user
-                   .save()
-                   .then(() => console.log(user))
-                   .catch((err) => console.log("Error: " + err));
-           })
+        users.findOne({ id: id1 })
+            .then((user) => {
+                if (!user["matching"]) {
+                    user["matching"] = {};
+                }
+                user["matching"] = { ...user["matching"], [id2]: { score: score, user: user2 } };
+                user
+                    .save()
+                    .then(() => console.log(user))
+                    .catch((err) => console.log("Error: " + err));
+            });
+        users.findOne({ id: id2 })
+            .then((user) => {
+                if (!user["matching"]) {
+                    user["matching"] = {};
+                }
+                user["matching"] = { ...user["matching"], [id1]: { score: score, user: user1 } };
+                user
+                    .save()
+                    .then(() => console.log(user))
+                    .catch((err) => console.log("Error: " + err));
+            })
 
-   });
+    });
 
 };
 
@@ -267,14 +269,14 @@ const updateSimilarity = (user0) => {
     users.find({})
         .then((users => users.filter(user => user.id !== user0.id)))
         .then((users) => {
-           // for (let i = 0; i < users.length; i++) {
-           //     matchTwo(user0, users[i]);
-           //     setTimeout(() => { }, 1000);
-           // }
+            // for (let i = 0; i < users.length; i++) {
+            //     matchTwo(user0, users[i]);
+            //     setTimeout(() => { }, 1000);
+            // }
             let i = 0;                  //  set your counter to 1
-                                        // race condition
+            // race condition
             function myLoop() {         //  create a loop function
-                setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+                setTimeout(function () {   //  call a 3s setTimeout when the loop is called
                     matchTwo(user0, users[i]);   //  your code here
                     i++;                    //  increment the counter
                     if (i < users.length) {           //  if the counter < 10, call the loop function
@@ -288,20 +290,20 @@ const updateSimilarity = (user0) => {
 };
 
 app.get("/matching", (req, res) => {
-   let user1 = {
-       "id": 10,
-       "name": "Mike",
-       "email": "Test",
-       "ideas": "I want to work on machine learning"
-   };
-   let user2 = {
-       "id": 20,
-       "name": "Tom",
-       "email": "Test",
-       "ideas": "I want to work on NLP"
-   };
-   matchTwo(user1, user2);
-   res.send("success");
+    let user1 = {
+        "id": 10,
+        "name": "Mike",
+        "email": "Test",
+        "ideas": "I want to work on machine learning"
+    };
+    let user2 = {
+        "id": 20,
+        "name": "Tom",
+        "email": "Test",
+        "ideas": "I want to work on NLP"
+    };
+    matchTwo(user1, user2);
+    res.send("success");
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
