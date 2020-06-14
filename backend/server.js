@@ -101,7 +101,8 @@ function isUserAuthenticated(req, res, next) {
 }
 
 //  using this to retrieve user data from the Passport 'profile' object
-app.get("/userdata", isUserAuthenticated, (req, res) => {
+// app.get("/userdata", isUserAuthenticated, (req, res) => {
+app.get("/userdata", (req, res) => {
     users.find({ email: req.user }, function (err, result) {
         console.log(result);
         res.send(result);
