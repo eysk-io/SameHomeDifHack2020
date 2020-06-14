@@ -191,17 +191,40 @@ app.post("/users/add", (req, res) => {
 
 });
 
+
+app.post("/user/select", (req, res) => {
+    const {userid, targetid, selection} = req.body;
+    users.findOne({id: userid})
+        .then((user) => {
+            let targetUser = user["matching"][targetid];
+            user["matching"] = {...user["matching"], [targetid]: {score: targetUser["score"] + selection * 5, user: targetUser["user"]}};
+            user
+                .save()
+                .then(() => res.json(user))
+                .catch((err) => console.log("Error: " + err));
+        });
+    users.findOne({id: targetid})
+        .then((user) => {
+            let currentUser = user["matching"][userid];
+            user["matching"] = {...user["matching"], [userid]: {score: currentUser["score"] + selection * 5, user: currentUser["user"]}};
+            user
+                .save()
+                .catch((err) => console.log("Error: " + err));
+        });
+});
+
 app.get("/users/:id", (req, res) => {
     users.findOne({id: req.params.id})
         .then((user) => res.json(user))
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
-app.get("/user/matching:id", (req, res) => {
+app.get("/users/matching:id", (req, res) => {
     users.findOne({id: req.params.id})
         .then((user) => res.json(user["matching"]))
         .catch((err) => res.status(400).json("Error: " + err));
 });
+
 
 const getOption = (text1, text2) =>{
     const option = {
