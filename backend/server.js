@@ -47,7 +47,7 @@ const LinkedOAuthProduction = new LinkedInStrategy(
     {
         clientID: "86fr1qhkghwu6j",
         clientSecret: "UJEq5LFDVX7Y5WVa",
-        callbackURL: "http://localhost:5000/auth/linkedin/callback",
+        callbackURL: process.env.IP_ADDRESS,
         scope: ["r_emailaddress", "r_liteprofile", "w_member_social"],
         state: true,
     },
@@ -104,7 +104,8 @@ function isUserAuthenticated(req, res, next) {
 app.get("/userdata", isUserAuthenticated, (req, res) => {
     users.find({ email: req.user }, function (err, result) {
         console.log(result);
-        res.send(result);
+        // res.send(result);
+        res.json("success");
     });
 });
 
@@ -151,7 +152,7 @@ app.get(
 //   which, in this example, will redirect the user to the home page.
 app.get(
     "/auth/linkedin/callback",
-    passport.authenticate("linkedin", { failureRedirect: "/login" }),
+    passport.authenticate("linkedin", { failureRedirect: "/userdata" }),
     (req, res) => {
         console.log("Successfully logged in");
         res.redirect("/secret");
