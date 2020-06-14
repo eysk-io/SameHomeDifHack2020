@@ -1,31 +1,43 @@
-import React, { useState } from 'react';
-import { Text, SafeAreaView } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React from 'react';
+import { Text, SafeAreaView, View, StyleSheet, Image } from 'react-native';
 
-const MatchProfileModal = ({ prospects }) => {
-    const [index, setIndex] = useState(0);
-    const [matchedProspects, setMatchedProspects] = useState(prospects);
-
-    function handleLike() {
-        if (matchedProspects[index]) {
-            matchedProspects[index].matched = true;
-        }
-        console.log(matchedProspects[index].name);
-        let i = Math.abs((index + 1) % matchedProspects.length);
-        setIndex(i);
-    }
-
+const MatchProfileModal = ({ img, name, bio, skills, matched }) => {
     return (
-        <SafeAreaView>
-            <Text>MatchProfileModal</Text>
-            <Text>{`Index: ${index}`}</Text>
-            <Text>{`Matched?: ${prospects[index] ? prospects[index].matched.toString() : undefined}`}</Text>
-            <TouchableOpacity onPress={handleLike}>
-                <Text>Like button</Text>
-            </TouchableOpacity>
-            <Text>{prospects.length.toString()}</Text>
+        <SafeAreaView style={styles.container}>
+            <Image
+                style={styles.img}
+                source={img}
+            />
+            <View style={styles.text}>
+                <Text style={styles.name}>{name}</Text>
+                <Text>{bio}</Text>
+                <Text>{skills}</Text>
+                <Text>{matched.toString()}</Text>
+            </View>
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        alignItems: 'center',
+        flex: 1
+    },
+    text: {
+        margin: 10,
+    },
+    name: {
+        fontSize: 40,
+    },
+    img: {
+        marginTop: 35,
+        marginBottom: 35,
+        width: 200,
+        height: 200,
+        borderRadius: 200,
+        borderWidth: 8,
+        borderColor: 'black'
+    }
+})
 
 export default MatchProfileModal;

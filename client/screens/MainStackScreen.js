@@ -8,11 +8,15 @@ const MainStack = createStackNavigator();
 
 const MainStackScreen = () => {
     return (
-        <MainStack.Navigator>
-            {/* <MainStack.Screen
+        <MainStack.Navigator
+            screenOptions={{
+                headerShown: false
+            }}
+        >
+            <MainStack.Screen
                 name='Home'
                 component={Home}
-            /> */}
+            />
             <MainStack.Screen
                 name='ProfileModal'
                 component={ProfileModal}
