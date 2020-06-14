@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { SafeAreaView, TouchableOpacity, StyleSheet, View, PanResponder, Animated, Text } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheckCircle, faTimesCircle, faCommentDots } from '@fortawesome/free-regular-svg-icons';
@@ -9,6 +9,17 @@ const MatchingPage = ({ navigation }) => {
     const [index, setIndex] = useState(0);
     const [matchedProspects, setMatchedProspects] = useState(PROSPECTS);
     const [isNoMatch, setIsNoMatch] = useState(false);
+    const [data, setData] = useState({})
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    async function fetchData() {
+        const res = await fetch('http://localhost:5000/userdata');
+        temp = await res.json();
+        setData(temp);
+    }
 
     const position = new Animated.ValueXY();
 
