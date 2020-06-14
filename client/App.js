@@ -25,6 +25,7 @@ export default function App() {
           <RootStack.Screen
             name='ChatWindowModal'
             component={ChatWindowModal}
+            options={{ headerShown: false }}
           />
           <RootStack.Screen
             name='MatchProfileModal'

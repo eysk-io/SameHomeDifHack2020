@@ -32,6 +32,9 @@ const MatchingPage = ({ navigation }) => {
     });
 
     function handleLike() {
+        if (index === 1) {
+            navigation.navigate('ChatWindowModal');
+        }
         if (matchedProspects[index]) {
             let temp = matchedProspects;
             temp[index].matched = true;
@@ -77,7 +80,7 @@ const MatchingPage = ({ navigation }) => {
             >
                 {
                     isNoMatch ?
-                        (<Text>No responses found</Text>) :
+                        (<Text style={styles.noResponse}>No one to match with in your area</Text>) :
                         (<MatchProfileModal
                             name={matchedProspects[index].name}
                             img={matchedProspects[index].img}
@@ -103,23 +106,38 @@ const MatchingPage = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    noResponse: {
+        color: '#142352',
+        fontSize: 40,
+        fontWeight: 'bold',
+        padding: 10,
+        borderRadius: 25,
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+    },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     profile: {
+        textAlign: 'center',
         alignItems: 'center',
-        width: '85%',
+        width: '90%',
         height: '80%',
-        borderWidth: 1,
+        borderWidth: 15,
         borderRadius: 25,
+        borderColor: '#142352',
     },
     buttons: {
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     button: {
-        margin: 20
+        margin: 20,
+        color: '#142352',
     }
 })
 

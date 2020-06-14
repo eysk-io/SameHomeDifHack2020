@@ -4,12 +4,13 @@ import { images } from '../../assets';
 import { Select } from '@material-ui/core/Select';
 import { NativeSelect } from '@material-ui/core/NativeSelect';
 import { Chip } from '@material-ui/core/Chip';
+import data from '../../assets/data';
 
 export default class ProfileModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: images.EMPTY_PROFILE_PIC,
+            img: 'https://media-exp1.licdn.com/dms/image/C5603AQHSdjgl5iIEbA/profile-displayphoto-shrink_800_800/0?e=1597881600&v=beta&t=3ZVKFLtIU9jaC5cNm8gagwLL-CRDqhO9D4GRQlIcmkc',
             name: "",
             description: "",
             email: "",
@@ -111,8 +112,7 @@ export default class ProfileModal extends Component {
             }
             this.setState({ interests: temp });
         }
-        // registerUser();
-        this.props.navigation.navigate('MatchingPage')
+        this.props.navigation.navigate('MatchingPage', data);
     }
 
     async registerUser() {
@@ -131,9 +131,9 @@ export default class ProfileModal extends Component {
                 </View>
 
                 <View style={styles.profilePicContainer}>
-                    <Image style={styles.profilePic} source={this.state.img} />
+                    <Image style={styles.profilePic} source={images.eric.photo} />
                     <TouchableOpacity style={styles.uploadButton} onPress={this.uploadPhoto}>
-                        <Text style={styles.uploadText}>Upload Photo</Text>
+                        <Text style={styles.uploadText}>Upload New Photo</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -224,14 +224,16 @@ const styles = StyleSheet.create({
     },
 
     profilePicContainer: {
-        marginTop: 50,
+        marginTop: 30,
         marginLeft: "auto",
         marginRight: "auto"
     },
 
     profilePic: {
         width: 200,
-        height: 200
+        height: 200,
+        borderRadius: 30,
+        marginBottom: 20,
     },
 
     nameInput: {
